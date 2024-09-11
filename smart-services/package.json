@@ -19,13 +19,17 @@
     "react-dom": "^18.3.1"
   },
   "jest": {
-  "testMatch": [
-    "**/src/**/*.test.js",
-    "**/src/**/*.test.jsx",
-    "**/src/**/*.test.ts",
-    "**/src/**/*.test.tsx"
-  ],
-  "testPathIgnorePatterns": ["/node_modules/"]
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx,ts,tsx}",
+      "!src/index.tsx",
+      "!src/**/*.d.ts"
+    ],
+    "coverageReporters": ["json", "lcov", "text", "clover"],
+    "testMatch": [
+      "**/src/**/__tests__/**/*.{js,jsx,ts,tsx}",
+      "**/src/**/*.{spec,test}.{js,jsx,ts,tsx}"
+    ],
+    "snapshotSerializers": ["enzyme-to-json/serializer"]
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",
