@@ -2,12 +2,10 @@ version: '3.8'
 
 services:
   backend:
-    environment:
-      - COMMIT_SHA=${COMMIT_SHA}
     build:
       context: ./backend
       dockerfile: Dockerfile
-    image: martinjsdev/smartservices:backend-${ COMMIT_SHA }
+    image: martinjsdev/smartservices:backend-last
     ports:
       - "3000:3000"
     env_file:
@@ -20,12 +18,10 @@ services:
       timeout: 10s
 
   frontend:
-    environment:
-      - COMMIT_SHA=${COMMIT_SHA}
     build:
       context: ./smart-services
       dockerfile: Dockerfile
-    image: martinjsdev/smartservices:frontend-${ COMMIT_SHA }
+    image: martinjsdev/smartservices:frontend-last
     ports:
       - "8080:8080"
     env_file:
