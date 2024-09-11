@@ -47,7 +47,7 @@ jobs:
                 
             - name: Run tests
               run: |
-                cd ../backend
+                cd backend
                 npm test
 
             - name: Set up Docker Buildx
