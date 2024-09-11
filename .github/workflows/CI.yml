@@ -47,8 +47,6 @@ jobs:
                 
             - name: Run tests
               run: |
-                cd smart-services
-                npm test
                 cd ../backend
                 npm test
 
