@@ -1,17 +1,23 @@
 version: '3.8'
 
 services:
+
+  docker:
+    image: docker:latest
+    ports:
+      - 2375:2375
+
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
     image: martinjsdev/smartservices:backend-last
     ports:
-      - "3000:3000"
+      - "8080:3000"
     env_file:
       - .env 
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/about.json"]
+      test: ["CMD", "curl", "-f", "http://localhost:8080/about.json"]
       interval: 30s
       retries: 3
       start_period: 30s
@@ -23,6 +29,6 @@ services:
       dockerfile: Dockerfile
     image: martinjsdev/smartservices:frontend-last
     ports:
-      - "8080:5173"
+      - "5173:5173"
     env_file:
       - .env

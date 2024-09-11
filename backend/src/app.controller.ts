@@ -9,4 +9,13 @@ export class AppController {
   getHello(): string {
     return this.appService.getHello();
   }
+
+  @Get('/about.json')
+  getAbout(): any {
+    return {
+      name: 'My Application',
+      version: '1.0.0',
+      description: 'This is a sample about.json file',
+    };
+  }
 }
