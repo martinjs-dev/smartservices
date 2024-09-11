@@ -16,12 +16,12 @@ services:
       - "8080:3000"
     env_file:
       - .env 
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/about.json"]
-      interval: 30s
-      retries: 3
-      start_period: 30s
-      timeout: 10s
+    # healthcheck:
+    #   test: ["CMD", "curl", "-f", "http://localhost:8080/about.json"]
+    #   interval: 30s
+    #   retries: 3
+    #   start_period: 30s
+    #   timeout: 10s
 
   frontend:
     build:
