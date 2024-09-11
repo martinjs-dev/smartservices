@@ -71,11 +71,11 @@ jobs:
 
       - name: Push Docker images
         run: |
-          docker tag martinjsdev/backend:${{ github.sha }} martinjsdev/backend:latest
-          docker tag martinjsdev/smartservices:${{ github.sha }} martinjsdev/smartservices:latest
+          docker tag martinjsdev/smartservices:backend-${{ github.sha }} martinjsdev/smartservices:backend-latest
+          docker tag martinjsdev/smartservices:frontend-${{ github.sha }} martinjsdev/smartservices:latest
 
-          docker push martinjsdev/backend:${{ github.sha }}
-          docker push martinjsdev/backend:latest
+          docker push martinjsdev/smartservices:backend-${{ github.sha }}
+          docker push martinjsdev/smartservices:backend-latest
 
-          docker push martinjsdev/smartservices:${{ github.sha }}
+          docker push martinjsdev/smartservices:frontend-${{ github.sha }}
           docker push martinjsdev/smartservices:latest

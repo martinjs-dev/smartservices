@@ -5,6 +5,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
+    image: martinjsdev/smartservices:backend-${{ github.sha }}
     ports:
       - "3000:3000" # Mappe le port 3000 du conteneur au port 8081 sur l'hôte
     env_file:
@@ -20,6 +21,7 @@ services:
     build:
       context: ./smart-services
       dockerfile: Dockerfile
+    image: martinjsdev/smartservices:frontend-${{ github.sha }}
     ports:
       - "8080:8080" # Mappe le port 80 du conteneur au port 8080 sur l'hôte
     env_file:
