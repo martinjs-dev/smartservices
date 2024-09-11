@@ -37,12 +37,12 @@ jobs:
                 npm install
 
                 
-            - name: Run link
+            - name: Run lint
               run: |
                 cd smart-services
-                npm run link
+                npm run lint
                 cd ../backend
-                npm run link
+                npm run lint
 
                 
             - name: Run tests
