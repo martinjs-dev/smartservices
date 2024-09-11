@@ -5,11 +5,13 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    image: martinjsdev/smartservices:backend-${{ github.sha }}
+    image: martinjsdev/smartservices:backend-${ COMMIT_SHA }
+    environment:
+      - COMMIT_SHA=${COMMIT_SHA}
     ports:
-      - "3000:3000" # Mappe le port 3000 du conteneur au port 8081 sur l'hôte
+      - "3000:3000"
     env_file:
-      - .env # Charge les variables d'environnement depuis le fichier .env
+      - .env 
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/about.json"]
       interval: 30s
@@ -21,8 +23,10 @@ services:
     build:
       context: ./smart-services
       dockerfile: Dockerfile
-    image: martinjsdev/smartservices:frontend-${{ github.sha }}
+    image: martinjsdev/smartservices:frontend-${ COMMIT_SHA }
+    environment:
+      - COMMIT_SHA=${COMMIT_SHA}
     ports:
-      - "8080:8080" # Mappe le port 80 du conteneur au port 8080 sur l'hôte
+      - "8080:8080"
     env_file:
-      - .env # Charge les variables d'environnement depuis le fichier .env
+      - .env
