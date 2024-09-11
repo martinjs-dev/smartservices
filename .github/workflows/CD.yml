@@ -30,7 +30,7 @@ jobs:
 
       - name: Install Frontend dependencies
         run: |
-          cd smartservices
+          cd smart-services
           npm install
 
       - name: Install Backend Dependencies
@@ -41,7 +41,7 @@ jobs:
 
       - name: Build the frontend Application
         run: |
-          cd smartservices
+          cd smart-services
           npm run build
 
       - name: Build the backend Application
