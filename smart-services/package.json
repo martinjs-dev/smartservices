@@ -7,7 +7,12 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "react-scripts test",
+    "test:watch": "react-scripts test --watch",
+    "test:cov": "react-scripts test --coverage",
+    "test:debug": "node --inspect-brk node_modules/.bin/react-scripts test --runInBand",
+    "test:e2e": "cypress open"
   },
   "dependencies": {
     "react": "^18.3.1",
