@@ -28,11 +28,26 @@ jobs:
         with:
           node-version: "latest"
 
-      - name: Install dependencies
-        run: npm install
+      - name: Install Frontend dependencies
+        run: |
+          cd smartservices
+          npm install
 
-      - name: Build the Application
-        run: npm run build
+      - name: Install Backend Dependencies
+        run: |
+          cd backend
+          npm install
+
+
+      - name: Build the frontend Application
+        run: |
+          cd smartservices
+          npm run build
+
+      - name: Build the backend Application
+        run: |
+          cd backend
+          npm run build
 
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v2
