@@ -24,12 +24,19 @@
       "!src/index.tsx",
       "!src/**/*.d.ts"
     ],
-    "coverageReporters": ["json", "lcov", "text", "clover"],
+    "coverageReporters": [
+      "json",
+      "lcov",
+      "text",
+      "clover"
+    ],
     "testMatch": [
       "**/src/**/__tests__/**/*.{js,jsx,ts,tsx}",
       "**/src/**/*.{spec,test}.{js,jsx,ts,tsx}"
     ],
-    "snapshotSerializers": ["enzyme-to-json/serializer"]
+    "snapshotSerializers": [
+      "enzyme-to-json/serializer"
+    ]
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",
@@ -37,6 +44,7 @@
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",
     "autoprefixer": "^10.4.20",
+    "enzyme-to-json": "^3.6.2",
     "eslint": "^9.9.0",
     "eslint-plugin-react": "^7.35.0",
     "eslint-plugin-react-hooks": "^5.1.0-rc.0",
