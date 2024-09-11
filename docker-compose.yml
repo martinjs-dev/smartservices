@@ -18,7 +18,7 @@ services:
 
   frontend:
     build:
-      context: ./smartservices
+      context: ./smart-services
       dockerfile: Dockerfile
     ports:
       - "8080:8080" # Mappe le port 80 du conteneur au port 8080 sur l'hôte
