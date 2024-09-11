@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000" # Mappe le port 3000 du conteneur au port 8081 sur l'hôte
+    env_file:
+      - .env # Charge les variables d'environnement depuis le fichier .env
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/about.json"]
+      interval: 30s
+      retries: 3
+      start_period: 30s
+      timeout: 10s
+
+  frontend:
+    build:
+      context: ./smartservices
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080" # Mappe le port 80 du conteneur au port 8080 sur l'hôte
+    env_file:
+      - .env # Charge les variables d'environnement depuis le fichier .env

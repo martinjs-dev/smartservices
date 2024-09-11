@@ -1,0 +1,63 @@
+name: Continuous Deployment 
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    services:
+      docker:
+        image: docker:latest
+        ports:
+          - 2375:2375
+        options: --privileged
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup NodeJS
+        uses: actions/setup-node@v3
+        with:
+          node-version: "latest"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build the Application
+        run: npm run build
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build Docker images with Docker Compose
+        run: docker-compose -f docker-compose.yml build
+        env:
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+
+      - name: Push Docker images
+        run: |
+          docker tag martinjsdev/backend:${{ github.sha }} martinjsdev/backend:latest
+          docker tag martinjsdev/smartservices:${{ github.sha }} martinjsdev/smartservices:latest
+
+          docker push martinjsdev/backend:${{ github.sha }}
+          docker push martinjsdev/backend:latest
+
+          docker push martinjsdev/smartservices:${{ github.sha }}
+          docker push martinjsdev/smartservices:latest
