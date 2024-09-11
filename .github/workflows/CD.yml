@@ -79,7 +79,7 @@ jobs:
           docker tag martinjsdev/smartservices:frontend-${{ github.sha }} martinjsdev/smartservices:latest
 
           docker push martinjsdev/smartservices:backend-${{ github.sha }}
-          docker push martinjsdev/smartservices:backend-latest
-
           docker push martinjsdev/smartservices:frontend-${{ github.sha }}
+          
+          docker push martinjsdev/smartservices:backend-latest
           docker push martinjsdev/smartservices:latest
