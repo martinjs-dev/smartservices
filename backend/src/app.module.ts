@@ -3,6 +3,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ApiNewsService } from './api-news/api-news.service';
+import { ApiNewsController } from './api-news/api-news.controller';
 
 @Module({
   imports: [
@@ -17,7 +19,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       }),
     }),
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [AppController, ApiNewsController],
+  providers: [AppService, ApiNewsService],
 })
 export class AppModule {}
