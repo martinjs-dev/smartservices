@@ -1,11 +1,12 @@
-import { IsEmail, IsOptional, IsString } from 'class-validator';
+import { IsEmail, IsOptional, IsString, IsArray } from 'class-validator';
 
 export class CreateUserDto {
   @IsEmail()
   email: string;
 
+  @IsOptional()
   @IsString()
-  password: string;
+  password?: string;
 
   @IsOptional()
   @IsString()
@@ -14,6 +15,14 @@ export class CreateUserDto {
   @IsOptional()
   @IsString()
   providerId?: string;
+
+  @IsOptional()
+  @IsString()
+  accessToken?: string;
+
+  @IsOptional()
+  @IsString()
+  refreshToken?: string;
 
   @IsOptional()
   @IsString()
@@ -26,6 +35,11 @@ export class CreateUserDto {
   @IsOptional()
   @IsString()
   lastName?: string;
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  subscribedWidgets?: string[];
 
   @IsOptional()
   @IsString()

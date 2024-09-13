@@ -31,6 +31,18 @@ export class UserService {
     return user;
   }
 
+  // async findByEmail(email: string): Promise<User> {
+  //   const user = await this.findOne({email: {email}});
+  //   if (!user) {
+  //     throw new NotFoundException(`User with email ${email} not found`);
+  //   }
+  //   return user;
+  // }
+
+  async findByEmail(email: string): Promise<User | null> {
+    return this.userModel.findOne({ email }).exec();
+  }
+
   async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
     const updatedUser = await this.userModel
       .findByIdAndUpdate(id, updateUserDto, { new: true })
@@ -46,6 +58,14 @@ export class UserService {
     if (!result) {
       throw new NotFoundException(`User with id ${id} not found`);
     }
+  }
+
+  async findOrCreate(userDto: CreateUserDto): Promise<User> {
+    const existingUser = await this.findByEmail(userDto.email);
+    if (existingUser) {
+      return existingUser;
+    }
+    return this.create(userDto);
   }
 
   async login(loginUserDto: LoginUserDto): Promise<User> {
@@ -84,5 +104,9 @@ export class UserService {
       }
       return user;
     }
+  }
+
+  async validateUser(email: string, password: string): Promise<User | null> {
+    return this.userModel.findOne({ email, password }).exec();
   }
 }
