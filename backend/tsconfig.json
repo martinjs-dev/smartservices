@@ -1,6 +1,8 @@
 {
   "compilerOptions": {
     "module": "commonjs",
+    "target": "es6",
+    "types": ["jest"],
     "declaration": true,
     "removeComments": true,
     "emitDecoratorMetadata": true,
