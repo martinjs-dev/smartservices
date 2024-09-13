@@ -3,7 +3,7 @@ import globals from "globals";
 import react from "eslint-plugin-react";
 import reactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
-const unusedImports = require('eslint-plugin-unused-imports');
+import unusedImports from 'eslint-plugin-unused-imports'
 
 export default [
   { ignores: ["dist"] },
