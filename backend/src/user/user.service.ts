@@ -7,7 +7,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
 
 @Injectable()
-export class UsersService {
+export class UserService {
   constructor(@InjectModel('User') private readonly userModel: Model<User>) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
@@ -16,7 +16,11 @@ export class UsersService {
   }
 
   async findAll(): Promise<User[]> {
-    return this.userModel.find().exec();
+    const user = await this.userModel.find().exec();
+    if (!user || user.length == 0) {
+      throw new NotFoundException('User data not found!');
+    }
+    return user;
   }
 
   async findOne(id: string): Promise<User> {
@@ -25,6 +29,18 @@ export class UsersService {
       throw new NotFoundException(`User with id ${id} not found`);
     }
     return user;
+  }
+
+  // async findByEmail(email: string): Promise<User> {
+  //   const user = await this.findOne({email: {email}});
+  //   if (!user) {
+  //     throw new NotFoundException(`User with email ${email} not found`);
+  //   }
+  //   return user;
+  // }
+
+  async findByEmail(email: string): Promise<User | null> {
+    return this.userModel.findOne({ email }).exec();
   }
 
   async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
@@ -42,6 +58,14 @@ export class UsersService {
     if (!result) {
       throw new NotFoundException(`User with id ${id} not found`);
     }
+  }
+
+  async findOrCreate(userDto: CreateUserDto): Promise<User> {
+    const existingUser = await this.findByEmail(userDto.email);
+    if (existingUser) {
+      return existingUser;
+    }
+    return this.create(userDto);
   }
 
   async login(loginUserDto: LoginUserDto): Promise<User> {
@@ -80,5 +104,9 @@ export class UsersService {
       }
       return user;
     }
+  }
+
+  async validateUser(email: string, password: string): Promise<User | null> {
+    return this.userModel.findOne({ email, password }).exec();
   }
 }
