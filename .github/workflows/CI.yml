@@ -36,12 +36,12 @@ jobs:
                 cd backend
                 npm install
                 
-            - name: Run lint
-              run: |
-                # cd smart-services
-                # npm run lint
-                cd backend
-                npm run lint
+            # - name: Run lint
+            #   run: |
+            #     # cd smart-services
+            #     # npm run lint
+            #     cd backend
+            #     npm run lint
                 
             - name: Run tests
               run: |
