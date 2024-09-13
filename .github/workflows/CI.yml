@@ -52,7 +52,9 @@ jobs:
               uses: docker/setup-buildx-action@v2
 
             - name: Install Docker Compose
-              run: sudo apt-get install docker-compose
+              run: |
+                sudo apt-get update
+                sudo apt-get install -y docker-compose
 
             - name: Build and Test with Docker Compose
               run: |
