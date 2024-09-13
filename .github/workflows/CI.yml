@@ -24,7 +24,7 @@ jobs:
             - name: Setup NodeJS
               uses: actions/setup-node@v3
               with:
-                node-version: "latest"
+                node-version: "20"
 
             - name: Install Frontend dependencies
               run: |
@@ -36,12 +36,12 @@ jobs:
                 cd backend
                 npm install
                 
-            # - name: Run lint
-            #   run: |
-            #     # cd smart-services
-            #     # npm run lint
-            #     cd backend
-            #     npm run lint
+            - name: Run lint
+              run: |
+                cd smart-services
+                npm run lint
+                cd backend
+                npm run lint
                 
             - name: Run tests
               run: |
