@@ -5,6 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ApiNewsService } from './api-news/api-news.service';
 import { ApiNewsController } from './api-news/api-news.controller';
+import { ApiBookModule } from './api-book/api-book.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { ApiNewsController } from './api-news/api-news.controller';
         uri: `mongodb+srv://${configService.get<string>('DB_USER')}:${encodeURIComponent(configService.get<string>('DB_PASSWORD'))}@${configService.get<string>('DB_HOST')}/${configService.get<string>('DB_NAME')}?retryWrites=true&w=majority`,
       }),
     }),
+    ApiBookModule,
   ],
   controllers: [AppController, ApiNewsController],
   providers: [AppService, ApiNewsService],

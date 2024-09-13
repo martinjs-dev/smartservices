@@ -10,4 +10,3 @@ export class ApiNewsController {
     return await this.apiNewsService.getNews();
   }
 }
-http://localhost:3000/api-news
