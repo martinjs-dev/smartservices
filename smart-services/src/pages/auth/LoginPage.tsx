@@ -1,70 +1,73 @@
-// src/pages/Login.jsx
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from 'react';
+import axios from './api';
+import { useNavigate} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState(''); 
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Gestion de la soumission du formulaire
+
+    try {
+      const response = await axios.post('/auth/login', {
+        email,
+        password,
+      });
+
+      const token = response.data;
+      localStorage.setItem('smart_access', token.access_token);
+      navigate('/dashboard');
+    } catch (error) {
+      setErrorMessage('Erreur lors de la connexion');
+      console.error('Erreur lors de la connexion', error);
+    }
   };
+
 
   return (
     <div className="flex items-center justify-center p-6">
       <div className="w-full max-w-md bg-white shadow-lg rounded-lg p-8">
         <h2 className="text-2xl font-bold mb-6 text-primary">Connexion</h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className='space-y-4 text-left'>
+          {errorMessage && <p className='text-error'>{errorMessage}</p>}
           <div>
-            <label
-              htmlFor="email"
-              className="block text-textPrimary font-medium mb-1"
-            >
+            <label htmlFor='email' className='block text-textPrimary font-medium mb-1'>
               Email
             </label>
             <input
-              id="email"
-              type="email"
+              id='email'
+              type='email'
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full bg-gray-100 text-textPrimary border border-gray-300 py-2 px-3 rounded-md"
-              placeholder="email@example.com"
+              className='w-full bg-gray-100 text-textPrimary border border-gray-300 py-2 px-3 rounded-md'
+              placeholder='email@example.com'
               required
             />
           </div>
           <div>
-            <label
-              htmlFor="password"
-              className="block text-textPrimary font-medium mb-1"
-            >
+            <label htmlFor='password' className='block text-textPrimary font-medium mb-1'>
               Mot de passe
             </label>
             <input
-              id="password"
-              type="password"
+              id='password'
+              type='password'
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-gray-100 text-textPrimary border border-gray-300 py-2 px-3 rounded-md"
-              placeholder="Mot de passe"
+              className='w-full bg-gray-100 text-textPrimary border border-gray-300 py-2 px-3 rounded-md'
+              placeholder='Mot de passe'
               required
             />
           </div>
           <button
-            type="submit"
-            className="bg-primary text-white py-2 px-4 rounded-md hover:bg-orange-700"
+            type='submit'
+            className='bg-primary w-full text-white py-2 px-4 rounded-md hover:bg-orange-700'
           >
             Se connecter
           </button>
-          <p className="text-textSecondary mt-4">
-            Pas encore de compte ?{" "}
-            <Link
-              to="/register"
-              className="text-secondary hover:text-orange-600"
-            >
-              S'inscrire
-            </Link>
-          </p>
         </form>
 
         <div className="flex items-center justify-center my-6">
@@ -113,9 +116,19 @@ const Login = () => {
             Facebook
           </button>
         </div>
+        <p className="text-textSecondary mt-4">
+            Pas encore de compte ?{" "}
+            <Link
+              to="/register"
+              className="text-secondary hover:text-orange-600"
+            >
+              S'inscrire
+            </Link>
+          </p>
       </div>
     </div>
   );
 };
 
 export default Login;
+
