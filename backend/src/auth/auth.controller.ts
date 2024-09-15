@@ -12,6 +12,7 @@ import {
   // Param,
   Body,
   UploadedFile,
+  // UnauthorizedException,
   // Query,
   // Query,
 } from '@nestjs/common';
@@ -39,7 +40,7 @@ export class AuthController {
     private readonly authService: AuthService,
     private readonly jwtService: JwtService,
     private readonly userService: UserService,
-    private readonly emailService: EmailService,
+    private readonly emailService: EmailService
   ) {}
 
   @Post('login')
@@ -96,7 +97,7 @@ export class AuthController {
 
       res.cookie('access_token', tokens.access_token, { httpOnly: true });
       return res.redirect(
-        `${process.env.FRONTEND_URL}/auth/callback?token=${tokens.access_token}`,
+        `${process.env.FRONTEND_URL}/auth/callback?token=${tokens.access_token}`
       );
     } catch (error) {
       console.log(error);
@@ -120,7 +121,7 @@ export class AuthController {
 
       res.cookie('access_token', tokens.access_token, { httpOnly: true });
       return res.redirect(
-        `${process.env.FRONTEND_URL}/auth/callback?token=${tokens.access_token}`,
+        `${process.env.FRONTEND_URL}/auth/callback?token=${tokens.access_token}`
       );
     } catch (error) {
       console.log(error);
@@ -192,7 +193,11 @@ export class AuthController {
     if (existingUser && existingUser.refreshToken === 'notVerified') {
       console.log('User exists and just have to verify');
       try {
-        const payload = { email: existingUser.email, sub: existingUser._id };
+        const payload = {
+          email: existingUser.email,
+          sub: existingUser._id,
+          status: existingUser.refreshToken,
+        };
 
         const token = await this.jwtService.sign(payload, {
           secret: process.env.JWT_SECRET,
@@ -204,7 +209,7 @@ export class AuthController {
           token,
         );
 
-        localStorage.setItem('smart_access', token);
+        // localStorage.setItem('smart_mail', existingUser.email);
 
         return await response.status(HttpStatus.CREATED).json({
           message:
@@ -223,9 +228,12 @@ export class AuthController {
         createUserDto.password,
         saltRounds,
       );
+
       createUserDto.password = hashedPassword;
       createUserDto.refreshToken = 'notVerified';
+
       const newUser = await this.userService.create(createUserDto);
+
       return await response.status(HttpStatus.CREATED).json({
         message: 'User registered successfully',
         newUser,
@@ -252,13 +260,13 @@ export class AuthController {
           cb(null, `${file.fieldname}-${uniqueSuffix}${ext}`);
         },
       }),
-    }),
+    })
   )
   async updateProfile(
     @Res() response,
     @Body() updateUserDto: UpdateUserDto,
     @UploadedFile() profilePicture: Express.Multer.File,
-    @Req() req,
+    @Req() req
   ) {
     try {
       if (profilePicture) {
@@ -267,7 +275,7 @@ export class AuthController {
 
       const updatedUser = await this.userService.update(
         req.user.sub,
-        updateUserDto,
+        updateUserDto
       );
       return response.status(HttpStatus.OK).json({
         message: 'Profil mis à jour avec succès',
@@ -336,4 +344,32 @@ export class AuthController {
       });
     }
   }
+
+  // @Post('resend-verif')
+  // @UseGuards(JwtAuthGuard)
+  // async resendVerificationEmail(
+  //   @Req() req,
+  //   @Res() res: Response,
+  //   @Headers('authorization') authHeader: string,
+  // ) {
+  //   // Extraction du token Bearer de l'en-tête
+  //   const token = authHeader?.split(' ')[1];
+  //   if (!token) {
+  //     throw new UnauthorizedException('Token manquant');
+  //   }
+
+  //   const result = await this.authService.resendVerificationEmail(token);
+
+  //   if (result.success) {
+  //     return res.status(HttpStatus.OK).json({
+  //       success: true,
+  //       message: 'Email de vérification renvoyé avec succès.',
+  //     });
+  //   } else {
+  //     return res.status(HttpStatus.BAD_REQUEST).json({
+  //       success: false,
+  //       message: result.message || 'Erreur lors de l'envoi de l'email de vérification.',
+  //     });
+  //   }
+  // }
 }
