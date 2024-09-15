@@ -14,6 +14,8 @@ const CheckEmail = () => {
       },
     };
 
+    // onClick={resendEmailVerificationToken}
+
     try {
       const response = await axios.get(
         backendUrl + "/auth/email-verify",
@@ -42,12 +44,12 @@ const CheckEmail = () => {
           boîte de réception et cliquer sur le lien qui vous a été envoyé.
         </p>
         <p className="text-center text-textSecondary mt-4">
-          Vous n'avez pas reçu l'email ?{" "}
+          Vous n&apos;avez pas reçu l&apos;email ?{" "}
           <span
-            onClick={resendEmailVerificationToken}
+            
             className="text-secondary hover:text-orange-600 cursor-pointer"
           >
-            Renvoyer l'email
+            Renvoyer l&apos;email
           </span>
         </p>
       </div>

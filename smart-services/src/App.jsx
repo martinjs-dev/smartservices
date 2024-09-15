@@ -25,18 +25,20 @@ function App() {
       {isAuthenticated && <StickyHeader />}
       <main className="pt-16">
         <ContextProvider>
-          <Routes>
+        <Routes>
+          <Route>
             {/* <Route element={<PrivateRoute />}> */}
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/profile" element={<UserProfile />} />
             <Route path="/logout" element={<Logout />} />
-          </Routes>
+          </Route>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/auth/callback" element={<AuthCallback />} />
           <Route path="/" element={<HomePage />} />
           <Route path="/check-email" element={<CheckEmail />} />
           {/* Ajoute d'autres routes ici */}
+        </Routes>
         </ContextProvider>
       </main>
     </Router>
