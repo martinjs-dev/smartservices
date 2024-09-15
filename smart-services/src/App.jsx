@@ -10,21 +10,25 @@ import RegisterPage from "./pages/auth/RegisterPage";
 import StickyHeader from "./components/StickyHeader";
 import UserProfile from "./pages/dashboard/UserProfile";
 import PrivateRoute from "./components/PrivateRoute";
+import { ContextProvider } from "./context/MusicContext";
 
 function App() {
   return (
     <Router>
       <StickyHeader />
       <main className="pt-16">
-        <Routes>
-          <Route element={<PrivateRoute />}>
+        <ContextProvider>
+          <Routes>
+            {/* <Route element={<PrivateRoute />}> */}
             <Route path="/dashboard" element={<DashboardPage />} />
-          </Route>
-          <Route path="/profile" element={<UserProfile />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-          {/* Ajoute d'autres routes ici */}
-        </Routes>
+
+            {/* </Route> */}
+            <Route path="/profile" element={<UserProfile />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            {/* Ajoute d'autres routes ici */}
+          </Routes>
+        </ContextProvider>
       </main>
     </Router>
   );
