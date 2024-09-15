@@ -9,6 +9,8 @@ const Login = () => {
   const [errorMessage, setErrorMessage] = useState(''); 
   const navigate = useNavigate();
 
+  const api = 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -25,6 +27,10 @@ const Login = () => {
       setErrorMessage('Erreur lors de la connexion');
       console.error('Erreur lors de la connexion', error);
     }
+  };
+
+  const handleOAuthLogin = (provider) => {
+    window.location.href = `/api/auth/${provider}`;
   };
 
 
