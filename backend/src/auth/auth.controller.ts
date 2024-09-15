@@ -7,6 +7,12 @@ import {
   Get,
   Redirect,
   HttpStatus,
+  UseInterceptors,
+  Put,
+  Param,
+  Body,
+  UploadedFile,
+  Query,
   // Query,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
@@ -17,12 +23,21 @@ import { LocalAuthGuard } from './guards/local-auth.guard';
 import { User } from 'src/user/user.interface';
 import { Public } from 'src/decorators/public.decorator';
 import { JwtService } from '@nestjs/jwt';
+import { UpdateUserDto } from 'src/user/dto/update-user.dto';
+import { UserService } from 'src/user/user.service';
+import { diskStorage } from 'multer';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { extname } from 'path';
+import { request } from 'http';
+import { CreateUserDto } from 'src/user/dto/create-user.dto';
+
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly jwtService: JwtService,
+    private readonly userService: UserService,
   ) {}
 
   @Post('login')
@@ -157,4 +172,100 @@ export class AuthController {
         .json({ message: 'Invalid refresh token' });
     }
   }
+
+  @Public()
+  @Post('register')
+  async register(@Res() response, @Body() createUserDto: CreateUserDto) {
+    try {
+      createUserDto.refreshToken = 'notVerified';
+      const newUser = await this.userService.create(createUserDto);
+      return (await response.status(HttpStatus.CREATED).json({
+        message: 'User registered successfully',
+        newUser,
+      }));
+    } catch (err) {
+      return response.status(HttpStatus.BAD_REQUEST).json({
+        statusCode: 400,
+        message: 'Error: User not registered!',
+        error: 'Bad Request',
+        err,
+      });
+    }
+  }
+
+  @Put('update-profile')
+  @UseInterceptors(
+    FileInterceptor('profilePicture', {
+      storage: diskStorage({
+        destination: './uploads',
+        filename: (req, file, cb) => {
+          const uniqueSuffix =
+            Date.now() + '-' + Math.round(Math.random() * 1e9);
+          const ext = extname(file.originalname);
+          cb(null, `${file.fieldname}-${uniqueSuffix}${ext}`);
+        },
+      }),
+    }),
+  )
+  async updateProfile(
+    @Res() response,
+    @Body() updateUserDto: UpdateUserDto,
+    @UploadedFile() profilePicture: Express.Multer.File,
+    @Req() req,
+  ) {
+    try {
+      if (profilePicture) {
+        updateUserDto.profilePicture = profilePicture.filename;
+      }
+
+      const updatedUser = await this.userService.update(req.user.sub, updateUserDto);
+      return response.status(HttpStatus.OK).json({
+        message: 'Profil mis à jour avec succès',
+        updatedUser,
+      });
+    } catch (err) {
+      return response.status(HttpStatus.BAD_REQUEST).json({
+        statusCode: 400,
+        message: 'Erreur: Veuillez vérifier si vous êtes connecté !',
+        error: 'Bad Request',
+        err,
+      });
+    }
+  }
+
+  @Get('email-verify')
+async verifyEmail(@Query('token') token: string, @Res() res) {
+  try {
+    const decoded = await this.jwtService.verifyAsync(token, {
+      secret: process.env.JWT_SECRET,
+    });
+
+    
+    const user = await this.userService.findOne(decoded.sub);
+
+    if (!user) {
+      return res.status(HttpStatus.NOT_FOUND).json({
+        message: 'User not found',
+      });
+    }
+
+    
+    if (user.refreshToken = 'verified') {
+      return res.status(HttpStatus.BAD_REQUEST).json({
+        message: 'User is already verified',
+      });
+    }
+
+    
+    user.refreshToken = 'verified';
+    await user.save();
+
+    
+    return res.redirect('/login');
+  } catch (error) {
+    return res.status(HttpStatus.BAD_REQUEST).json({
+      message: 'Invalid or expired token',
+    });
+  }
+}
 }

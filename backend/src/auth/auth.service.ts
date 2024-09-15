@@ -1,9 +1,9 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { UserService } from '../user/user.service';
-import { JwtService } from '@nestjs/jwt';
-import { User } from '../user/user.interface';
-import { CreateUserDto } from 'src/user/dto/create-user.dto';
-import { Request } from 'express';
+import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { UserService } from "../user/user.service";
+import { JwtService } from "@nestjs/jwt";
+import { User } from "../user/user.interface";
+import { CreateUserDto } from "src/user/dto/create-user.dto";
+import { Request } from "express";
 
 @Injectable()
 export class AuthService {
@@ -35,9 +35,14 @@ export class AuthService {
   }
 
   async login(user: User) {
-    const payload = { email: user.email, sub: user._id, role: user.role };
-    const accessToken = this.jwtService.sign(payload, { expiresIn: '60m' });
-    const refreshToken = this.jwtService.sign(payload, { expiresIn: '7d' });
+    const payload = {
+      email: user.email,
+      sub: user._id,
+      role: user.role,
+      status: user.refreshToken,
+    };
+    const accessToken = this.jwtService.sign(payload, { expiresIn: "60m" });
+    const refreshToken = this.jwtService.sign(payload, { expiresIn: "7d" });
 
     return {
       access_token: accessToken,
@@ -46,10 +51,10 @@ export class AuthService {
   }
 
   async verifyToken(req: Request): Promise<any> {
-    const token = req.headers.authorization?.split(' ')[1];
+    const token = req.headers.authorization?.split(" ")[1];
 
     if (!token) {
-      throw new UnauthorizedException('Token not found');
+      throw new UnauthorizedException("Token not found");
     }
 
     try {
@@ -58,7 +63,7 @@ export class AuthService {
       });
       return decoded;
     } catch (error) {
-      throw new UnauthorizedException('Invalid token : ' + error);
+      throw new UnauthorizedException("Invalid token : " + error);
     }
   }
 }

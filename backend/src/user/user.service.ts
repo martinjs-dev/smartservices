@@ -5,14 +5,36 @@ import { User } from './user.interface'; // Assure-toi du bon chemin
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
+import { EmailService } from 'src/email/email.service';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class UserService {
-  constructor(@InjectModel('User') private readonly userModel: Model<User>) {}
+  constructor(
+    @InjectModel('User') private readonly userModel: Model<User>,
+    private readonly emailService: EmailService,
+    private readonly jwtService: JwtService,
+  ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
     const createdUser = new this.userModel(createUserDto);
-    return createdUser.save();
+
+    const newUser = await createdUser.save();
+
+    try {
+      const payload = { email: newUser.email, sub: newUser._id };
+
+      const token = await this.jwtService.sign(payload, {
+        secret: process.env.JWT_SECRET,
+        expiresIn: '7d',
+      });
+
+      await this.emailService.sendVerificationEmail(newUser.email, token);
+
+      return newUser;
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   async findAll(): Promise<User[]> {
