@@ -13,7 +13,7 @@ export class UserService {
   constructor(
     @InjectModel('User') private readonly userModel: Model<User>,
     private readonly emailService: EmailService,
-    private readonly jwtService: JwtService,
+    private readonly jwtService: JwtService
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
@@ -29,7 +29,9 @@ export class UserService {
         expiresIn: '7d',
       });
 
-      await this.emailService.sendVerificationEmail(newUser.email, token);
+      if (createUserDto.accessToken == 'notVerified') {
+        await this.emailService.sendVerificationEmail(newUser.email, token);
+      }
 
       return newUser;
     } catch (err) {
@@ -87,6 +89,7 @@ export class UserService {
     if (existingUser) {
       return existingUser;
     }
+    userDto.accessToken = 'RegisteredByOAuth2';
     return this.create(userDto);
   }
 

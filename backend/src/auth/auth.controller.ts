@@ -30,7 +30,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { extname } from 'path';
 import { request } from 'http';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
-
+import { EmailService } from 'src/email/email.service';
 
 @Controller('auth')
 export class AuthController {
@@ -38,6 +38,7 @@ export class AuthController {
     private readonly authService: AuthService,
     private readonly jwtService: JwtService,
     private readonly userService: UserService,
+    private readonly emailService: EmailService
   ) {}
 
   @Post('login')
@@ -70,7 +71,7 @@ export class AuthController {
       const tokens = await this.authService.login(user);
       res.cookie('access_token', tokens.access_token, { httpOnly: true });
       return res.redirect(
-        `${process.env.FRONTEND_URL}/profile?token=${tokens.access_token}`,
+        `${process.env.FRONTEND_URL}/profile?token=${tokens.access_token}`
       );
     } catch (error) {
       console.log(error);
@@ -94,7 +95,7 @@ export class AuthController {
 
       res.cookie('access_token', tokens.access_token, { httpOnly: true });
       return res.redirect(
-        `${process.env.FRONTEND_URL}/profile?token=${tokens.access_token}`,
+        `${process.env.FRONTEND_URL}/profile?token=${tokens.access_token}`
       );
     } catch (error) {
       console.log(error);
@@ -118,7 +119,7 @@ export class AuthController {
 
       res.cookie('access_token', tokens.access_token, { httpOnly: true });
       return res.redirect(
-        `${process.env.FRONTEND_URL}/profile?token=${tokens.access_token}`,
+        `${process.env.FRONTEND_URL}/profile?token=${tokens.access_token}`
       );
     } catch (error) {
       console.log(error);
@@ -176,13 +177,50 @@ export class AuthController {
   @Public()
   @Post('register')
   async register(@Res() response, @Body() createUserDto: CreateUserDto) {
+    const existingUser = await this.userService.findByEmail(
+      createUserDto.email,
+    );
+
+    if (existingUser && existingUser.refreshToken != 'notVerified') {
+      return await response.status(HttpStatus.CREATED).json({
+        message: 'User already exists !',
+        existingUser,
+      });
+    }
+
+    if (existingUser && existingUser.refreshToken == 'notVerified') {
+      console.log('User exists and just have to verify');
+      try {
+        const payload = { email: existingUser.email, sub: existingUser._id };
+
+        const token = await this.jwtService.sign(payload, {
+          secret: process.env.JWT_SECRET,
+          expiresIn: '7d',
+        });
+
+        await this.emailService.sendVerificationEmail(
+          existingUser.email,
+          token
+        );
+
+        return await response.status(HttpStatus.CREATED).json({
+          message:
+            'User already exists and just have to verify ! We juste resent the verification email, please check your mails',
+          existingUser,
+        });
+      } catch (err) {
+        console.log(err);
+        return err;
+      }
+    }
+
     try {
-      createUserDto.refreshToken = 'notVerified';
+      createUserDto.accessToken = 'notVerified';
       const newUser = await this.userService.create(createUserDto);
-      return (await response.status(HttpStatus.CREATED).json({
+      return await response.status(HttpStatus.CREATED).json({
         message: 'User registered successfully',
         newUser,
-      }));
+      });
     } catch (err) {
       return response.status(HttpStatus.BAD_REQUEST).json({
         statusCode: 400,
@@ -218,7 +256,10 @@ export class AuthController {
         updateUserDto.profilePicture = profilePicture.filename;
       }
 
-      const updatedUser = await this.userService.update(req.user.sub, updateUserDto);
+      const updatedUser = await this.userService.update(
+        req.user.sub,
+        updateUserDto,
+      );
       return response.status(HttpStatus.OK).json({
         message: 'Profil mis à jour avec succès',
         updatedUser,
@@ -234,38 +275,38 @@ export class AuthController {
   }
 
   @Get('email-verify')
-async verifyEmail(@Query('token') token: string, @Res() res) {
-  try {
-    const decoded = await this.jwtService.verifyAsync(token, {
-      secret: process.env.JWT_SECRET,
-    });
-
-    
-    const user = await this.userService.findOne(decoded.sub);
-
-    if (!user) {
-      return res.status(HttpStatus.NOT_FOUND).json({
-        message: 'User not found',
+  @Public()
+  async verifyEmail(@Query('token') token: string, @Res() res) {
+    try {
+      console.log('decoded ' + token);
+      const decoded = await this.jwtService.verifyAsync(token, {
+        secret: process.env.JWT_SECRET,
       });
-    }
+      console.log(decoded);
+      const user = await this.userService.findOne(decoded.sub);
+      console.log(user);
 
-    
-    if (user.refreshToken = 'verified') {
+      if (!user) {
+        return res.status(HttpStatus.NOT_FOUND).json({
+          message: 'User not found',
+        });
+      }
+
+      if (user.refreshToken != 'notVerified') {
+        return res.status(HttpStatus.BAD_REQUEST).json({
+          message: 'User is already verified',
+        });
+      }
+
+      user.refreshToken = 'verified';
+      await user.save();
+
+      return "res.redirect('/login')";
+    } catch (error) {
       return res.status(HttpStatus.BAD_REQUEST).json({
-        message: 'User is already verified',
+        message: 'Invalid or expired token',
+        error: error,
       });
     }
-
-    
-    user.refreshToken = 'verified';
-    await user.save();
-
-    
-    return res.redirect('/login');
-  } catch (error) {
-    return res.status(HttpStatus.BAD_REQUEST).json({
-      message: 'Invalid or expired token',
-    });
   }
-}
 }
