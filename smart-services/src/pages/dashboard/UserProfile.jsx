@@ -1,5 +1,5 @@
 // src/pages/UserProfile.jsx
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 const servicesList = [
   { id: 1, name: 'Service A', description: 'Description du Service A' },
@@ -32,7 +32,7 @@ const UserProfile = () => {
           className="w-24 h-24 rounded-full border-2 border-primary"
         />
         <div>
-          <h2 className="text-xl font-heading text-textPrimary">Nom d'Utilisateur</h2>
+          <h2 className="text-xl font-heading text-textPrimary">Nom d&apos;Utilisateur</h2>
           <p className="text-textSecondary">email@example.com</p>
         </div>
       </div>

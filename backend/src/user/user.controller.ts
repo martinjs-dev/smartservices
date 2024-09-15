@@ -5,7 +5,6 @@ import {
   Get,
   HttpStatus,
   Param,
-  Post,
   Put,
   Res,
   UploadedFile,
@@ -17,56 +16,61 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
-import { CreateUserDto } from './dto/create-user.dto';
+// import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { LoginUserDto } from './dto/login-user.dto';
+// import { LoginUserDto } from './dto/login-user.dto';
 import { UserService } from './user.service';
 import { Roles } from 'src/decorators/roles.decorator';
+// import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { Role } from './role.enum';
+// import { Public } from 'src/decorators/public.decorator';
+// import { LocalAuthGuard } from 'src/auth/guards/local-auth.guard';
 
 @Controller('user')
+@UseGuards(RolesGuard)
+@Roles(Role.Admin)
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  // Create a new user
-  @Post('register')
-  @Redirect('/user/profile')
-  async register(@Res() response, @Body() createUserDto: CreateUserDto) {
-    try {
-      const newUser = await this.userService.create(createUserDto);
-      return response.status(HttpStatus.CREATED).json({
-        message: 'User created successfully',
-        newUser,
-      });
-    } catch (err) {
-      return response.status(HttpStatus.BAD_REQUEST).json({
-        statusCode: 400,
-        message: 'Error: User not created!',
-        error: 'Bad Request',
-        err,
-      });
-    }
-  }
+  // // Create a new user
+  // @Public()
+  // @Post('register')
+  // async register(@Res() response, @Body() createUserDto: CreateUserDto) {
+  //   try {
+  //     const newUser = await this.userService.create(createUserDto);
+  //     return response.status(HttpStatus.CREATED).json({
+  //       message: 'User created successfully',
+  //       newUser,
+  //     });
+  //   } catch (err) {
+  //     return response.status(HttpStatus.BAD_REQUEST).json({
+  //       statusCode: 400,
+  //       message: 'Error: User not created!',
+  //       error: 'Bad Request',
+  //       err,
+  //     });
+  //   }
+  // }
 
-  // Login a user
-  @Post('login')
-  async login(@Res() response, @Body() loginUserDto: LoginUserDto) {
-    try {
-      const user = await this.userService.login(loginUserDto);
-      return response.status(HttpStatus.OK).json({
-        message: 'Login successful',
-        user,
-      });
-    } catch (err) {
-      return response.status(HttpStatus.UNAUTHORIZED).json({
-        statusCode: 401,
-        message: 'Error: Invalid credentials!',
-        error: 'Unauthorized',
-        err,
-      });
-    }
-  }
+  // // Login a user
+  // @Post('login')
+  // async login(@Res() response, @Body() loginUserDto: LoginUserDto) {
+  //   try {
+  //     const user = await this.userService.login(loginUserDto);
+  //     return response.status(HttpStatus.OK).json({
+  //       message: 'Login successful',
+  //       user,
+  //     });
+  //   } catch (err) {
+  //     return response.status(HttpStatus.UNAUTHORIZED).json({
+  //       statusCode: 401,
+  //       message: 'Error: Invalid credentials!',
+  //       error: 'Unauthorized',
+  //       err,
+  //     });
+  //   }
+  // }
 
   // View user profile
   @Get('profile')
@@ -126,8 +130,6 @@ export class UserController {
 
   // Get all users (renommé cette méthode)
   @Get()
-  @UseGuards(RolesGuard)
-  @Roles(Role.Admin)
   async getAllUsers(@Res() response) {
     try {
       const users = await this.userService.findAll();

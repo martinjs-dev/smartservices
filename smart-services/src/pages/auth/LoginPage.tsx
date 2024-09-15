@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import axios from './api';
-import { useNavigate} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
+
+    const backendUrl = "http://localhost:3000"
+
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -22,11 +25,18 @@ const Login = () => {
       localStorage.setItem('smart_access', token.access_token);
       navigate('/dashboard');
     } catch (error) {
-      setErrorMessage('Erreur lors de la connexion');
+      if (error.response && error.response.data) {
+        setErrorMessage(error.response.data.message || 'Erreur lors de la connexion');
+      } else {
+        setErrorMessage('Erreur lors de la connexion');
+      }
       console.error('Erreur lors de la connexion', error);
     }
   };
 
+  const handleOAuthLogin = (provider) => {
+    window.location.href = `${backendUrl}/auth/${provider}`;
+  };
 
   return (
     <div className="flex items-center justify-center p-6">
@@ -72,7 +82,7 @@ const Login = () => {
 
         <div className="flex items-center justify-center my-6">
           <div className="w-full border-t border-gray-300"></div>
-          <span className="mx-4 text-gray-500">OR</span>
+          <span className="mx-4 text-gray-500">OU</span>
           <div className="w-full border-t border-gray-300"></div>
         </div>
 
@@ -80,7 +90,7 @@ const Login = () => {
           {/* Google Button */}
           <button
             className="w-1/3 bg-gray-700 hover:bg-gray-600 text-white font-semibold py-2 rounded mx-1 flex items-center justify-center"
-            onClick={() => (window.location.href = "/auth/google")}
+            onClick={() => handleOAuthLogin('google')}
           >
             <img
               src="https://lh3.googleusercontent.com/COxitqgJr1sJnIDe8-jiKhxDx1FrYbtRHKJ9z_hELisAlapwE9LUPh6fcXIfb5vwpbMl4xl9H9TRFPc5NOO8Sb3VSgIBrfRYvW6cUA"
@@ -93,7 +103,7 @@ const Login = () => {
           {/* GitHub Button */}
           <button
             className="w-1/3 bg-gray-700 hover:bg-gray-600 text-white font-semibold py-2 rounded mx-1 flex items-center justify-center"
-            onClick={() => (window.location.href = "/auth/github")}
+            onClick={() => handleOAuthLogin('github')}
           >
             <img
               src="https://cdn0.iconfinder.com/data/icons/shift-logotypes/32/Github-512.png"
@@ -106,7 +116,7 @@ const Login = () => {
           {/* Facebook Button */}
           <button
             className="w-1/3 bg-gray-700 hover:bg-gray-600 text-white font-semibold py-2 rounded mx-1 flex items-center justify-center"
-            onClick={() => (window.location.href = "/auth/facebook")}
+            onClick={() => handleOAuthLogin('facebook')}
           >
             <img
               src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg"
@@ -131,4 +141,3 @@ const Login = () => {
 };
 
 export default Login;
-
