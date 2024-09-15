@@ -21,10 +21,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 // import { LoginUserDto } from './dto/login-user.dto';
 import { UserService } from './user.service';
 import { Roles } from 'src/decorators/roles.decorator';
-<<<<<<< HEAD
-=======
 // import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
->>>>>>> feat-crud-users
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { Role } from './role.enum';
 // import { Public } from 'src/decorators/public.decorator';
