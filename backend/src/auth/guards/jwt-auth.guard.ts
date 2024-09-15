@@ -45,7 +45,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
         secret: process.env.JWT_SECRET,
       });
 
-      if (user.refreshToken == 'notVerified') {
+      if (user.status === 'notVerified') {
         console.log('Please verify your email');
         throw new UnauthorizedException('Please verify your email');
       }

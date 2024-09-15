@@ -220,7 +220,7 @@ export class AuthController {
       const saltRounds = 10;
       const hashedPassword = await bcrypt.hash(createUserDto.password, saltRounds);
       createUserDto.password = hashedPassword;
-      createUserDto.accessToken = 'notVerified';
+      createUserDto.refreshToken = 'notVerified';
       const newUser = await this.userService.create(createUserDto);
       return await response.status(HttpStatus.CREATED).json({
         message: 'User registered successfully',
