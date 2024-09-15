@@ -190,7 +190,7 @@ export class AuthController {
       });
     }
 
-    if (existingUser && existingUser.refreshToken == 'notVerified') {
+    if (existingUser && existingUser.refreshToken === 'notVerified') {
       console.log('User exists and just have to verify');
       try {
         const payload = { email: existingUser.email, sub: existingUser._id };

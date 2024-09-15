@@ -113,7 +113,7 @@ export class EmailService {
             <h2>Vérifiez votre adresse e-mail</h2>
             <p>Bonjour,</p>
             <p>Merci de vous être inscrit à <strong>Smart Services</strong> ! Veuillez confirmer votre adresse e-mail en cliquant sur le bouton ci-dessous.</p>
-            <a href="{{verification_link}}" class="cta-button">Vérifier mon e-mail</a>
+            <a href="${process.env.FRONTEND_URL}/verify?token=${token}" class="cta-button">Vérifier mon e-mail</a>
             <p>Si vous n'avez pas créé de compte, vous pouvez ignorer cet e-mail en toute sécurité.</p>
             <p>Cordialement,<br>L'équipe Smart Services</p>
         </div>
