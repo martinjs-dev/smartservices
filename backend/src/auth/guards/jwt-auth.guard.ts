@@ -1,4 +1,3 @@
-// jwt-auth.guard.ts
 import {
   Injectable,
   ExecutionContext,
@@ -12,7 +11,7 @@ import { Reflector } from '@nestjs/core';
 export class JwtAuthGuard extends AuthGuard('jwt') {
   constructor(
     private jwtService: JwtService,
-    private readonly reflector: Reflector,
+    private readonly reflector: Reflector
   ) {
     super();
   }
@@ -23,7 +22,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     const authHeader = request.headers.authorization;
     const isPublic = this.reflector.get<boolean>(
       'isPublic',
-      context.getHandler(),
+      context.getHandler()
     );
 
     if (isPublic) {
@@ -45,6 +44,11 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       const user = await this.jwtService.verifyAsync(token, {
         secret: process.env.JWT_SECRET,
       });
+
+      if (user.refreshToken == 'notVerified') {
+        console.log('Please verify your email');
+        throw new UnauthorizedException('Please verify your email');
+      }
 
       request.user = user;
       console.log('Requêtte venant du token : ' + token + '\n');
