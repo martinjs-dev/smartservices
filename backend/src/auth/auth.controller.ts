@@ -31,6 +31,8 @@ import { extname } from 'path';
 import { request } from 'http';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { EmailService } from 'src/email/email.service';
+import * as bcrypt from 'bcrypt';
+
 
 @Controller('auth')
 export class AuthController {
@@ -215,6 +217,9 @@ export class AuthController {
     }
 
     try {
+      const saltRounds = 10;
+      const hashedPassword = await bcrypt.hash(createUserDto.password, saltRounds);
+      createUserDto.password = hashedPassword;
       createUserDto.accessToken = 'notVerified';
       const newUser = await this.userService.create(createUserDto);
       return await response.status(HttpStatus.CREATED).json({
