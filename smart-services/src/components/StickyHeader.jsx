@@ -1,5 +1,4 @@
-// src/components/StickyHeader.jsx
-import React from 'react';
+// import React from 'react';
 import { Link } from 'react-router-dom';
 
 const StickyHeader = () => {
@@ -21,10 +20,10 @@ const StickyHeader = () => {
         {/* Actions */}
         <div>
           <Link 
-            to='/login' 
+            to='/logout' 
             className='bg-primary hover:bg-accent text-white py-2 px-4 rounded-md'
           >
-            Connexion
+            Deconnexion
           </Link>
         </div>
       </div>

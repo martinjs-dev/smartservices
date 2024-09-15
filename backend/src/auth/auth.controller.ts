@@ -9,10 +9,10 @@ import {
   HttpStatus,
   UseInterceptors,
   Put,
-  Param,
+  // Param,
   Body,
   UploadedFile,
-  Query,
+  // Query,
   // Query,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
@@ -28,11 +28,10 @@ import { UserService } from 'src/user/user.service';
 import { diskStorage } from 'multer';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { extname } from 'path';
-import { request } from 'http';
+// import { request } from 'http';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { EmailService } from 'src/email/email.service';
 import * as bcrypt from 'bcrypt';
-
 
 @Controller('auth')
 export class AuthController {
@@ -40,7 +39,7 @@ export class AuthController {
     private readonly authService: AuthService,
     private readonly jwtService: JwtService,
     private readonly userService: UserService,
-    private readonly emailService: EmailService
+    private readonly emailService: EmailService,
   ) {}
 
   @Post('login')
@@ -73,7 +72,7 @@ export class AuthController {
       const tokens = await this.authService.login(user);
       res.cookie('access_token', tokens.access_token, { httpOnly: true });
       return res.redirect(
-        `${process.env.FRONTEND_URL}/profile?token=${tokens.access_token}`
+        `${process.env.FRONTEND_URL}/auth/callback?token=${tokens.access_token}`,
       );
     } catch (error) {
       console.log(error);
@@ -97,7 +96,7 @@ export class AuthController {
 
       res.cookie('access_token', tokens.access_token, { httpOnly: true });
       return res.redirect(
-        `${process.env.FRONTEND_URL}/profile?token=${tokens.access_token}`
+        `${process.env.FRONTEND_URL}/auth/callback?token=${tokens.access_token}`,
       );
     } catch (error) {
       console.log(error);
@@ -121,7 +120,7 @@ export class AuthController {
 
       res.cookie('access_token', tokens.access_token, { httpOnly: true });
       return res.redirect(
-        `${process.env.FRONTEND_URL}/profile?token=${tokens.access_token}`
+        `${process.env.FRONTEND_URL}/auth/callback?token=${tokens.access_token}`,
       );
     } catch (error) {
       console.log(error);
@@ -202,8 +201,10 @@ export class AuthController {
 
         await this.emailService.sendVerificationEmail(
           existingUser.email,
-          token
+          token,
         );
+
+        localStorage.setItem('smart_access', token);
 
         return await response.status(HttpStatus.CREATED).json({
           message:
@@ -218,7 +219,10 @@ export class AuthController {
 
     try {
       const saltRounds = 10;
-      const hashedPassword = await bcrypt.hash(createUserDto.password, saltRounds);
+      const hashedPassword = await bcrypt.hash(
+        createUserDto.password,
+        saltRounds,
+      );
       createUserDto.password = hashedPassword;
       createUserDto.refreshToken = 'notVerified';
       const newUser = await this.userService.create(createUserDto);
@@ -301,7 +305,7 @@ export class AuthController {
         });
       }
       // console.log('decoded ' + token);
-      
+
       const decoded = await this.jwtService.verifyAsync(token, {
         secret: process.env.JWT_SECRET,
       });
