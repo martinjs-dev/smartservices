@@ -280,16 +280,34 @@ export class AuthController {
   }
 
   @Get('email-verify')
-  @Public()
-  async verifyEmail(@Query('token') token: string, @Res() res) {
+  async verifyEmail(@Req() req: Request, @Res() res): Promise<any> {
     try {
-      console.log('decoded ' + token);
+      // console.log(Request)
+
+      const authHeader = req.headers.authorization;
+
+      if (!authHeader) {
+        return res.status(HttpStatus.UNAUTHORIZED).json({
+          message: 'Authorization header is missing',
+        });
+      }
+      // console.log(authHeader)
+
+      const token = authHeader.split(' ')[1];
+
+      if (!token) {
+        return res.status(HttpStatus.UNAUTHORIZED).json({
+          message: 'Token is missing',
+        });
+      }
+      // console.log('decoded ' + token);
+      
       const decoded = await this.jwtService.verifyAsync(token, {
         secret: process.env.JWT_SECRET,
       });
-      console.log(decoded);
+      // console.log(decoded);
       const user = await this.userService.findOne(decoded.sub);
-      console.log(user);
+      // console.log(user);
 
       if (!user) {
         return res.status(HttpStatus.NOT_FOUND).json({
@@ -306,7 +324,7 @@ export class AuthController {
       user.refreshToken = 'verified';
       await user.save();
 
-      return "res.redirect('/login')";
+      return res.redirect(process.env.FRONTEND_URL + '/login');
     } catch (error) {
       return res.status(HttpStatus.BAD_REQUEST).json({
         message: 'Invalid or expired token',

@@ -30,7 +30,7 @@ export class UserService {
         expiresIn: '7d',
       });
 
-      if (createUserDto.accessToken == 'notVerified') {
+      if (createUserDto.refreshToken == 'notVerified') {
         await this.emailService.sendVerificationEmail(newUser.email, token);
       }
 
