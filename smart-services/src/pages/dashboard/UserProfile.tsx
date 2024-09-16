@@ -2,7 +2,7 @@ import axios from '../auth/api';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-const backendUrl = "https://api-smartservices.onrender.com";
+const backendUrl = "http://localhost:3000";
 
 const UserProfile = () => {
   const [email, setEmail] = useState('');
