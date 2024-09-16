@@ -16,6 +16,7 @@ import useAuth from "./hooks/useAuth";
 import Logout from "./pages/auth/Logout";
 import HomePage from "./pages/public/HomePage";
 import CheckEmail from "./pages/auth/VerifyEmail";
+import EmailVerification from "./pages/auth/EmailVerification";
 
 function App() {
   const  isAuthenticated  = useAuth();
@@ -37,7 +38,7 @@ function App() {
           <Route path="/auth/callback" element={<AuthCallback />} />
           <Route path="/" element={<HomePage />} />
           <Route path="/check-email" element={<CheckEmail />} />
-          {/* Ajoute d'autres routes ici */}
+          <Route path="/verify" element={<EmailVerification />} />
         </Routes>
         </ContextProvider>
       </main>

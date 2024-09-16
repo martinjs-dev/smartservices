@@ -1,5 +1,5 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from "react";
+import { Link } from "react-router-dom";
 
 const HomePage = () => {
   const searchParams = new URLSearchParams(location.search);
@@ -8,14 +8,21 @@ const HomePage = () => {
     localStorage.setItem("smart_access", token);
   }
   return (
-    <div className="bg-gray-50 min-h-screen flex flex-col">
+    <div className="bg-gray-50 flex flex-col">
       {/* Header */}
       <header className="bg-primary text-white py-6 px-4">
         <div className="container mx-auto flex items-center justify-between">
           <h1 className="text-2xl font-bold">Mon Application</h1>
           <nav>
-            <Link to="/login" className="text-white hover:text-gray-200 mx-2">Se connecter</Link>
-            <Link to="/register" className="text-white hover:text-gray-200 mx-2">S'inscrire</Link>
+            <Link to="/login" className="text-white hover:text-gray-200 mx-2">
+              Se connecter
+            </Link>
+            <Link
+              to="/register"
+              className="text-white hover:text-gray-200 mx-2"
+            >
+              S'inscrire
+            </Link>
           </nav>
         </div>
       </header>
@@ -29,14 +36,14 @@ const HomePage = () => {
           </p>
           <Link
             to="/dashboard"
-            className="bg-primary text-white py-2 px-6 rounded-lg text-lg font-semibold hover:bg-orange-700"
+            className="bg-primary text-white py-3 px-6 rounded-lg text-lg font-semibold hover:bg-orange-700"
           >
             Accéder au Dashboard
           </Link>
         </div>
 
         {/* Features Section */}
-        <section className="bg-white py-12">
+        <section className=" py-12">
           <div className="container mx-auto text-center">
             <h2 className="text-3xl font-bold mb-6 text-primary">Une panoplie de services</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -60,7 +67,10 @@ const HomePage = () => {
       {/* Footer */}
       <footer className="bg-primary text-white py-6 px-4">
         <div className="container mx-auto text-center">
-          <p>&copy; {new Date().getFullYear()} Mon Application. Tous droits réservés.</p>
+          <p>
+            &copy; {new Date().getFullYear()} Mon Application. Tous droits
+            réservés.
+          </p>
         </div>
       </footer>
     </div>
