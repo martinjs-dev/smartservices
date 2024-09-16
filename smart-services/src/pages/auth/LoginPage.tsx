@@ -3,7 +3,7 @@ import axios from './api';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 
-    const backendUrl = "http://localhost:3000"
+const backendUrl = "https://api-smartservices.onrender.com";
 
 
 const Login = () => {

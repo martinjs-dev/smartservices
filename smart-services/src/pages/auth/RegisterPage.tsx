@@ -2,7 +2,7 @@ import axios from './api';
 import React, { useState } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 
-const backendUrl = "http://localhost:3000"
+const backendUrl = "https://api-smartservices.onrender.com";
 
 const handleOAuthLogin = (provider) => {
   window.location.href = `${backendUrl}/auth/${provider}`;

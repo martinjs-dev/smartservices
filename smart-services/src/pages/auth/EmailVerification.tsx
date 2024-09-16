@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-const backendUrl = "http://localhost:3000";
+const backendUrl = "https://api-smartservices.onrender.com";
 
 const EmailVerification: React.FC = () => {
   const [verificationMessage, setVerificationMessage] = useState<string>('');
