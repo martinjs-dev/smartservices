@@ -7,7 +7,9 @@ import Weather from "../../components/Weather/index";
 import News from "../../components/News/index";
 import Food from "../../components/Cuisine";
 import Livre from "../../components/Livre/livre";
-
+import Convert_currency from "../../components/Currency/currency";
+import Film from "../../components/film/film";
+import Quote from "../../components/Quote/quote";
 const DashboardPage = () => {
   const [showModal, setShowModal] = useState(false);
 
@@ -40,6 +42,24 @@ const DashboardPage = () => {
       name: "Livre",
       id: "livre",
       widget: "Rechercher un livre",
+      search_query: "",
+    },
+    {
+      name: "Devises",
+      id: "devises",
+      widget: "Convertir une devise",
+      search_query: "",
+    },
+    {
+      name: "Films",
+      id: "films",
+      widget: "Rechercher un film",
+      search_query: "",
+    },
+    {
+      name: "Citations",
+      id: "citations",
+      widget: "Chercher une citation",
       search_query: "",
     },
   ];
@@ -185,6 +205,28 @@ const DashboardPage = () => {
                   }
                 />
               )}
+               {element.id === "devises" && (
+          <Convert_currency
+            onSearchQueryChange={(searchQuery) =>
+              handleUpdateSearchQuery(index, searchQuery)
+            }
+          />
+        )}
+        {element.id === "films" && (
+          <Film
+            onSearchQueryChange={(searchQuery) =>
+              handleUpdateSearchQuery(index, searchQuery)
+            }
+          />
+        )}
+        {element.id === "citations" && (
+          <Quote
+            onSearchQueryChange={(searchQuery) =>
+              handleUpdateSearchQuery(index, searchQuery)
+            }
+          />
+        )}
+        
             </div>
           ))}
       </div>

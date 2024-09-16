@@ -12,9 +12,8 @@ const StickyHeader = () => {
 
         {/* Navigation */}
         <nav className='flex space-x-6'>
-          <Link to='/dashboard' className='hover:text-secondary'>Dashboard</Link>
           <Link to='/profile' className='hover:text-secondary'>Profil</Link>
-          <Link to='/services' className='hover:text-secondary'>Services</Link>
+          <Link to='/dashboard' className='hover:text-secondary'>Dashboard</Link>
         </nav>
 
         {/* Actions */}

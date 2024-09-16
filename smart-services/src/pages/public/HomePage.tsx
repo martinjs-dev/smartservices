@@ -12,7 +12,7 @@ const HomePage = () => {
       {/* Header */}
       <header className="bg-primary text-white py-6 px-4">
         <div className="container mx-auto flex items-center justify-between">
-          <h1 className="text-3xl font-bold">Mon Application</h1>
+          <h1 className="text-2xl font-bold">Mon Application</h1>
           <nav>
             <Link to="/login" className="text-white hover:text-gray-200 mx-2">Se connecter</Link>
             <Link to="/register" className="text-white hover:text-gray-200 mx-2">S'inscrire</Link>
@@ -23,9 +23,9 @@ const HomePage = () => {
       {/* Main Content */}
       <main className="flex-grow py-12 px-4 sm:px-6 lg:px-8">
         <div className="container mx-auto text-center">
-          <h2 className="text-4xl font-bold mb-6 text-primary">Bienvenue sur Mon Application</h2>
+          <h2 className="text-4xl font-bold mb-6 text-primary">Welcome</h2>
           <p className="text-lg mb-8 text-gray-700">
-            Découvrez notre application innovante et profitez de fonctionnalités exceptionnelles pour améliorer votre expérience.
+            Découvrez Smart Sevices et profitez de fonctionnalités exceptionnelles pour améliorer votre expérience.
           </p>
           <Link
             to="/dashboard"
@@ -38,19 +38,19 @@ const HomePage = () => {
         {/* Features Section */}
         <section className="bg-white py-12">
           <div className="container mx-auto text-center">
-            <h2 className="text-3xl font-bold mb-6 text-primary">Fonctionnalités</h2>
+            <h2 className="text-3xl font-bold mb-6 text-primary">Une panoplie de services</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
               <div className="bg-gray-100 p-6 rounded-lg shadow-lg">
-                <h3 className="text-xl font-semibold mb-4">Fonctionnalité 1</h3>
-                <p className="text-gray-600">Description de la fonctionnalité 1. Cette fonctionnalité permet aux utilisateurs de réaliser des actions spécifiques avec facilité.</p>
+                <h3 className="text-xl font-semibold mb-4">Fonctionnalités</h3>
+                <p className="text-gray-600">Réaliser des actions spécifiques avec facilité.</p>
               </div>
               <div className="bg-gray-100 p-6 rounded-lg shadow-lg">
-                <h3 className="text-xl font-semibold mb-4">Fonctionnalité 2</h3>
-                <p className="text-gray-600">Description de la fonctionnalité 2. Profitez de cette fonctionnalité pour optimiser votre workflow et améliorer vos résultats.</p>
+                <h3 className="text-xl font-semibold mb-4">Services</h3>
+                <p className="text-gray-600">Aux utilisateurs d'obtenir des informations très rapidement.</p>
               </div>
               <div className="bg-gray-100 p-6 rounded-lg shadow-lg">
-                <h3 className="text-xl font-semibold mb-4">Fonctionnalité 3</h3>
-                <p className="text-gray-600">Description de la fonctionnalité 3. Une fonctionnalité conçue pour offrir une expérience utilisateur exceptionnelle et fluide.</p>
+                <h3 className="text-xl font-semibold mb-4">Experience-client</h3>
+                <p className="text-gray-600">Une experience exceptionnelle et fluide.</p>
               </div>
             </div>
           </div>
