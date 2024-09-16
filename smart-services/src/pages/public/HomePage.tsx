@@ -2,6 +2,11 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 const HomePage = () => {
+  const searchParams = new URLSearchParams(location.search);
+  const token = searchParams.get("token");
+  if (token) {
+    localStorage.setItem("smart_access", token);
+  }
   return (
     <div className="bg-gray-50 min-h-screen flex flex-col">
       {/* Header */}

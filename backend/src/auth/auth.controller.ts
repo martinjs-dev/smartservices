@@ -1,20 +1,5 @@
-import {
-  Controller,
-  Post,
-  Req,
-  Res,
-  UseGuards,
-  Get,
-  Redirect,
-  HttpStatus,
-  UseInterceptors,
-  Put,
-  // Param,
-  Body,
-  UploadedFile,
-  // UnauthorizedException,
-  // Query,
-  // Query,
+import {Controller, Post,Req,Res,UseGuards,Get,Redirect,HttpStatus,UseInterceptors,Put,Body,UploadedFile,
+ 
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
