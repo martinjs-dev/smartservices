@@ -12,7 +12,6 @@ import {
   // Param,
   Body,
   UploadedFile,
-  // UnauthorizedException,
   // Query,
   // Query,
 } from '@nestjs/common';
@@ -73,7 +72,7 @@ export class AuthController {
       const tokens = await this.authService.login(user);
       res.cookie('access_token', tokens.access_token, { httpOnly: true });
       return res.redirect(
-        `${process.env.FRONTEND_URL}/auth/callback?token=${tokens.access_token}`,
+        `${process.env.FRONTEND_URL}/auth/callback?token=${tokens.access_token}`
       );
     } catch (error) {
       console.log(error);
@@ -180,7 +179,7 @@ export class AuthController {
   @Post('register')
   async register(@Res() response, @Body() createUserDto: CreateUserDto) {
     const existingUser = await this.userService.findByEmail(
-      createUserDto.email,
+      createUserDto.email
     );
 
     if (existingUser && existingUser.refreshToken != 'notVerified') {
@@ -193,11 +192,7 @@ export class AuthController {
     if (existingUser && existingUser.refreshToken === 'notVerified') {
       console.log('User exists and just have to verify');
       try {
-        const payload = {
-          email: existingUser.email,
-          sub: existingUser._id,
-          status: existingUser.refreshToken,
-        };
+        const payload = { email: existingUser.email, sub: existingUser._id };
 
         const token = await this.jwtService.sign(payload, {
           secret: process.env.JWT_SECRET,
@@ -206,10 +201,10 @@ export class AuthController {
 
         await this.emailService.sendVerificationEmail(
           existingUser.email,
-          token,
+          token
         );
 
-        // localStorage.setItem('smart_mail', existingUser.email);
+        localStorage.setItem('smart_access', token);
 
         return await response.status(HttpStatus.CREATED).json({
           message:
@@ -226,14 +221,11 @@ export class AuthController {
       const saltRounds = 10;
       const hashedPassword = await bcrypt.hash(
         createUserDto.password,
-        saltRounds,
+        saltRounds
       );
-
       createUserDto.password = hashedPassword;
       createUserDto.refreshToken = 'notVerified';
-
       const newUser = await this.userService.create(createUserDto);
-
       return await response.status(HttpStatus.CREATED).json({
         message: 'User registered successfully',
         newUser,
@@ -278,7 +270,7 @@ export class AuthController {
         updateUserDto
       );
       return response.status(HttpStatus.OK).json({
-        message: 'Profil mis à jour avec succès',
+        message: 'Email vérifé avec succès',
         updatedUser,
       });
     } catch (err) {
@@ -292,10 +284,9 @@ export class AuthController {
   }
 
   @Get('email-verify')
+  @Public()
   async verifyEmail(@Req() req: Request, @Res() res): Promise<any> {
     try {
-      // console.log(Request)
-
       const authHeader = req.headers.authorization;
 
       if (!authHeader) {
@@ -303,7 +294,6 @@ export class AuthController {
           message: 'Authorization header is missing',
         });
       }
-      // console.log(authHeader)
 
       const token = authHeader.split(' ')[1];
 
@@ -312,14 +302,12 @@ export class AuthController {
           message: 'Token is missing',
         });
       }
-      // console.log('decoded ' + token);
 
       const decoded = await this.jwtService.verifyAsync(token, {
         secret: process.env.JWT_SECRET,
       });
-      // console.log(decoded);
+
       const user = await this.userService.findOne(decoded.sub);
-      // console.log(user);
 
       if (!user) {
         return res.status(HttpStatus.NOT_FOUND).json({
@@ -327,49 +315,25 @@ export class AuthController {
         });
       }
 
-      if (user.refreshToken != 'notVerified') {
-        return res.status(HttpStatus.BAD_REQUEST).json({
-          message: 'User is already verified',
+      if (user.refreshToken === 'verified') {
+        return res.status(HttpStatus.OK).json({
+          message: 'Cet email est déjà vérifié',
+          alreadyVerified: true,
         });
       }
 
       user.refreshToken = 'verified';
       await user.save();
 
-      return res.redirect(process.env.FRONTEND_URL + '/login');
+      return res.status(HttpStatus.OK).json({
+        message: 'Email vérifié avec succès',
+        alreadyVerified: false,
+      });
     } catch (error) {
       return res.status(HttpStatus.BAD_REQUEST).json({
         message: 'Invalid or expired token',
-        error: error,
+        error: error.message,
       });
     }
   }
-
-  // @Post('resend-verif')
-  // @UseGuards(JwtAuthGuard)
-  // async resendVerificationEmail(
-  //   @Req() req,
-  //   @Res() res: Response,
-  //   @Headers('authorization') authHeader: string,
-  // ) {
-  //   // Extraction du token Bearer de l'en-tête
-  //   const token = authHeader?.split(' ')[1];
-  //   if (!token) {
-  //     throw new UnauthorizedException('Token manquant');
-  //   }
-
-  //   const result = await this.authService.resendVerificationEmail(token);
-
-  //   if (result.success) {
-  //     return res.status(HttpStatus.OK).json({
-  //       success: true,
-  //       message: 'Email de vérification renvoyé avec succès.',
-  //     });
-  //   } else {
-  //     return res.status(HttpStatus.BAD_REQUEST).json({
-  //       success: false,
-  //       message: result.message || 'Erreur lors de l'envoi de l'email de vérification.',
-  //     });
-  //   }
-  // }
 }
